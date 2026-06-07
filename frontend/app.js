@@ -1,9 +1,7 @@
 // ==========================================================================
 // Application State & Constants
 // ==========================================================================
-const BACKEND_URL = window.location.origin.startsWith('file://') || (window.location.port && window.location.port !== '5000')
-  ? 'http://localhost:5000/api/weather'
-  : '/api/weather';
+const BACKEND_URL = 'https://weatherforecastai.onrender.com/api/weather';
 const DEFAULT_CITY = 'Agra, Uttar Pradesh, India';
 
 let weatherData = null;
@@ -115,7 +113,7 @@ async function fetchWeather(city) {
     weatherData = data;
     renderWeatherData(data);
     updateBackground(data.current.condition.code);
-    
+
     // Clear search box on success to keep UI tidy
     searchInput.value = '';
   } catch (error) {
@@ -134,7 +132,7 @@ function renderWeatherData(data) {
   // 1. Current Location Info
   cityNameHeader.textContent = data.city;
   countryNameHeader.textContent = data.country;
-  
+
   // Format local time nicely in time pill
   if (data.localTime) {
     const timePart = data.localTime.split(' ')[1];
@@ -147,10 +145,10 @@ function renderWeatherData(data) {
   const tempVal = currentUnit === 'C' ? Math.round(data.current.tempC) : Math.round(data.current.tempF);
   currentTemp.textContent = tempVal;
   document.querySelector('.temp-symbol').textContent = currentUnit === 'C' ? '°C' : '°F';
-  
+
   currentConditionText.textContent = data.current.condition.text;
   currentConditionDesc.textContent = getConditionDesc(data);
-  
+
   // Fix protocol relative icons from WeatherAPI
   let iconUrl = data.current.condition.icon;
   if (iconUrl.startsWith('//')) {
@@ -178,7 +176,7 @@ function renderWeatherData(data) {
   gridWindSpeed.textContent = data.current.windKph;
   gridVisibility.textContent = data.current.visibilityKm;
   gridPressure.textContent = data.current.pressureMb;
-  
+
   // UV Index display (UV index score + category)
   const uvVal = data.current.uv;
   const uvCat = getUvCategory(uvVal);
@@ -239,7 +237,7 @@ function renderWeatherData(data) {
       const dayName = formatDayName(day.date, index === 0);
       const dMax = currentUnit === 'C' ? Math.round(day.maxTempC) : Math.round(day.maxTempF);
       const dMin = currentUnit === 'C' ? Math.round(day.minTempC) : Math.round(day.minTempF);
-      
+
       let dIcon = day.condition.icon;
       if (dIcon.startsWith('//')) {
         dIcon = 'https:' + dIcon;
@@ -290,21 +288,21 @@ function updateBackground(conditionCode) {
     appBackground.classList.add('bg-sunny');
     return;
   }
-  
+
   // Thunderstorm
   const thunderstormCodes = [1087, 1273, 1276, 1279, 1282];
   if (thunderstormCodes.includes(conditionCode)) {
     appBackground.classList.add('bg-thunderstorm');
     return;
   }
-  
+
   // Rain / Shower / Drizzle
   const rainCodes = [1063, 1150, 1153, 1180, 1183, 1186, 1189, 1192, 1195, 1240, 1243, 1246];
   if (rainCodes.includes(conditionCode)) {
     appBackground.classList.add('bg-rain');
     return;
   }
-  
+
   // Snow / Sleet / Ice
   const snowCodes = [
     1066, 1069, 1072, 1114, 1117, 1168, 1171, 1198, 1201, 1204, 1207,
@@ -315,7 +313,7 @@ function updateBackground(conditionCode) {
     appBackground.classList.add('bg-snow');
     return;
   }
-  
+
   // Default: Cloudy / Mist / Fog (e.g. 1003, 1006, 1009, 1030, 1135, 1147)
   appBackground.classList.add('bg-cloudy');
 }
@@ -348,20 +346,20 @@ function formatHourLabel(timeStr) {
 
 function formatDayName(dateStr, isToday) {
   if (isToday) return 'Today';
-  
+
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const parts = dateStr.split('-');
   if (parts.length !== 3) return dateStr;
-  
+
   // Construct Date object using local time numbers to avoid TZ issues
   const localDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-  
+
   // Check if it matches today's actual date
   const today = new Date();
   if (localDate.toDateString() === today.toDateString()) {
     return 'Today';
   }
-  
+
   return days[localDate.getDay()].slice(0, 3);
 }
 
@@ -381,7 +379,7 @@ function getConditionDesc(data) {
   const humidity = data.current.humidity;
   const windKph = data.current.windKph;
   const temp = data.current.tempC;
-  
+
   if (condition.toLowerCase().includes('rain')) {
     return `Precipitation active, expect wind gusts up to ${windKph} km/h.`;
   }
