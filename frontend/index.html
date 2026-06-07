@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Get live weather forecasts and updates for any city worldwide instantly with WeatherForecastAI.">
+  <title>WeatherForecastAI | Premium Live Weather Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-default">
+  <div class="app-background" id="appBackground"></div>
+  
+  <div class="app-container">
+    <div class="glass-panel">
+      
+      <!-- Top Bar: Header with Rudraprayag Style location, search and controls -->
+      <header class="top-bar">
+        <div class="header-left">
+          <div class="location-heading">
+            <h1 id="cityNameHeader">Delhi</h1>
+            <span class="country-name" id="countryNameHeader">India</span>
+          </div>
+          <div class="status-badges">
+            <span class="badge badge-live">● LIVE</span>
+            <span class="badge badge-manual"><i class="fa-solid fa-keyboard"></i> Manual Search</span>
+          </div>
+        </div>
+        
+        <div class="header-right">
+          <form class="search-form" id="searchForm">
+            <div class="search-wrapper">
+              <i class="fa-solid fa-magnifying-glass search-icon"></i>
+              <input 
+                type="text" 
+                id="searchInput" 
+                placeholder="Search city... (e.g. London)" 
+                autocomplete="off" 
+                required
+              >
+              <button type="submit" class="search-btn" aria-label="Search">
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </form>
+
+          <div class="time-pill-container" id="timePill">
+            Delhi Time: --:-- PM
+          </div>
+
+          <div class="unit-toggle-container">
+            <button id="unitToggle" class="unit-btn" aria-label="Toggle Temperature Unit">
+              <span class="unit-label active" id="labelC">°C</span>
+              <span class="unit-divider">|</span>
+              <span class="unit-label" id="labelF">°F</span>
+            </button>
+          </div>
+
+          <button id="refreshBtn" class="refresh-btn" aria-label="Refresh Current City">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Status Messages (Loading / Errors) -->
+      <section class="status-section">
+        <div id="loadingIndicator" class="loading-spinner hidden">
+          <div class="spinner"></div>
+          <p>Fetching weather data...</p>
+        </div>
+        
+        <div id="errorAlert" class="error-card hidden">
+          <i class="fa-solid fa-circle-exclamation error-icon"></i>
+          <span id="errorMessage">City not found. Please try again.</span>
+          <button id="closeError" class="close-error-btn">&times;</button>
+        </div>
+      </section>
+
+      <!-- Main Weather Dashboard Grid -->
+      <div id="weatherContent" class="dashboard-grid">
+        
+        <!-- Left Column: Tall Main Weather Summary Card (Matches Left Card of Ref Design) -->
+        <section class="overview-panel glass-card">
+          <div class="overview-top">
+            <div class="condition-art-large">
+              <img id="currentIcon" src="//cdn.weatherapi.com/weather/64x64/day/116.png" alt="Weather condition icon">
+            </div>
+            <div class="condition-text-wrapper">
+              <h2 id="currentConditionText">Partly Cloudy</h2>
+              <p id="currentConditionDesc">Scattered clouds, periods of sun</p>
+            </div>
+          </div>
+
+          <div class="astro-details-compact">
+            <div class="astro-row">
+              <i class="fa-solid fa-sun-rising text-orange"></i>
+              <span>SUNRISE: <strong id="sunriseTime">--:-- AM</strong></span>
+            </div>
+            <div class="astro-row">
+              <i class="fa-solid fa-sun-setting text-red"></i>
+              <span>SUNSET: <strong id="sunsetTime">--:-- PM</strong></span>
+            </div>
+          </div>
+          
+          <div class="temp-section">
+            <div class="temp-display">
+              <span id="currentTemp" class="temp-value">--</span>
+              <span class="temp-symbol">°C</span>
+            </div>
+            <div class="feels-like-container">
+              Feels Like: <strong id="feelsLike">--</strong>°
+            </div>
+          </div>
+
+          <!-- Bottom Card Muted Row matching Pressure, Wind Speed, Wind Dir -->
+          <div class="overview-bottom-metrics">
+            <div class="mini-metric">
+              <i class="fa-solid fa-gauge-high"></i>
+              <div class="mini-metric-info">
+                <span>PRESSURE</span>
+                <strong id="bottomPressure">-- hPa</strong>
+              </div>
+            </div>
+            <div class="mini-metric">
+              <i class="fa-solid fa-wind"></i>
+              <div class="mini-metric-info">
+                <span>WIND SPEED</span>
+                <strong id="bottomWindSpeed">-- km/h</strong>
+              </div>
+            </div>
+            <div class="mini-metric">
+              <i class="fa-solid fa-circle-radiation"></i>
+              <div class="mini-metric-info">
+                <span>UV INDEX</span>
+                <strong id="bottomUv">--</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Right / Main Content Column -->
+        <div class="main-content-column">
+          
+          <!-- Compact Metrics Grid (6 Cards) -->
+          <section class="metrics-grid">
+            
+            <!-- 1. Feels Like Card -->
+            <div class="metric-card glass-card">
+              <div class="metric-card-header">
+                <i class="fa-solid fa-temperature-half icon-feels"></i>
+                <span>Feels Like</span>
+              </div>
+              <div class="metric-card-value">
+                <span id="gridFeelsLike">--</span>°
+              </div>
+              <div class="metric-card-footer" id="feelsLikeAdvice">
+                Similar to actual temperature.
+              </div>
+            </div>
+            
+            <!-- 2. Humidity Card -->
+            <div class="metric-card glass-card">
+              <div class="metric-card-header">
+                <i class="fa-solid fa-droplet icon-humidity"></i>
+                <span>Humidity</span>
+              </div>
+              <div class="metric-card-body-row">
+                <div class="metric-card-value">
+                  <span id="gridHumidity">--</span>%
+                </div>
+                <div class="progress-ring-container">
+                  <svg class="progress-ring" width="36" height="36">
+                    <circle class="progress-ring__background" stroke="rgba(255,255,255,0.06)" stroke-width="3" fill="transparent" r="15" cx="18" cy="18" />
+                    <circle id="humidityProgressCircle" class="progress-ring__circle" stroke="#38bdf8" stroke-width="3" fill="transparent" r="15" cx="18" cy="18" />
+                  </svg>
+                </div>
+              </div>
+              <div class="metric-card-footer" id="humidityAdvice">
+                Comfortable conditions.
+              </div>
+            </div>
+
+            <!-- 3. Wind Speed Card -->
+            <div class="metric-card glass-card">
+              <div class="metric-card-header">
+                <i class="fa-solid fa-wind icon-wind"></i>
+                <span>Wind Speed</span>
+              </div>
+              <div class="metric-card-value">
+                <span id="gridWindSpeed">--</span> <span class="sub-unit">km/h</span>
+              </div>
+              <div class="metric-card-footer" id="windAdvice">
+                Calm breeze.
+              </div>
+            </div>
+
+            <!-- 4. Visibility Card -->
+            <div class="metric-card glass-card">
+              <div class="metric-card-header">
+                <i class="fa-solid fa-eye icon-vis"></i>
+                <span>Visibility</span>
+              </div>
+              <div class="metric-card-value">
+                <span id="gridVisibility">--</span> <span class="sub-unit">km</span>
+              </div>
+              <div class="metric-card-footer" id="visAdvice">
+                Clear view.
+              </div>
+            </div>
+
+            <!-- 5. Pressure Card -->
+            <div class="metric-card glass-card">
+              <div class="metric-card-header">
+                <i class="fa-solid fa-gauge-high icon-pressure"></i>
+                <span>Pressure</span>
+              </div>
+              <div class="metric-card-value">
+                <span id="gridPressure">--</span> <span class="sub-unit">hPa</span>
+              </div>
+              <div class="metric-card-footer" id="pressureAdvice">
+                Standard atmospheric pressure.
+              </div>
+            </div>
+
+            <!-- 6. UV Index Card -->
+            <div class="metric-card glass-card">
+              <div class="metric-card-header">
+                <i class="fa-solid fa-circle-radiation icon-uv"></i>
+                <span>UV Index</span>
+              </div>
+              <div class="metric-card-value">
+                <span id="gridUvIndex">--</span>
+              </div>
+              <div class="metric-card-footer" id="uvAdvice">
+                Low risk of harm.
+              </div>
+            </div>
+
+          </section>
+
+          <!-- 24-Hour Forecast Panel -->
+          <section class="hourly-forecast-panel glass-card">
+            <h3 class="section-title"><i class="fa-regular fa-clock"></i> Next 24-Hour Forecast</h3>
+            <div class="hourly-scroll-container" id="hourlyContainer">
+              <!-- Hourly items injected dynamically -->
+            </div>
+          </section>
+
+          <!-- 7-Day Forecast (Now moved inside main-content-column for better layout flow) -->
+          <section class="daily-forecast-panel glass-card">
+            <h3 class="section-title"><i class="fa-regular fa-calendar-days"></i> 7-Day Weather Forecast</h3>
+            <div class="daily-scroll-container" id="dailyContainer">
+              <!-- Daily items injected dynamically -->
+            </div>
+          </section>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  
+  <footer class="app-footer">
+    <p>Powered securely by WeatherAPI.com | WeatherForecastAI &copy; 2026</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

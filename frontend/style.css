@@ -1,0 +1,908 @@
+/* ==========================================================================
+   Design Tokens & Root Variables
+   ========================================================================== */
+:root {
+  --font-family: 'Outfit', sans-serif;
+  --bg-primary: #0a0e1a;
+  --bg-card: #151c2e;
+  --bg-card-hover: #192237;
+  --bg-pill: rgba(255, 255, 255, 0.05);
+  
+  --border-card: rgba(255, 255, 255, 0.06);
+  --border-card-hover: rgba(255, 255, 255, 0.12);
+  
+  --text-primary: #ffffff;
+  --text-secondary: #8e9bb4;
+  --text-muted: rgba(142, 155, 180, 0.6);
+  
+  --accent-blue: #38bdf8;
+  --accent-amber: #eab308;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --border-radius-lg: 20px;
+  --border-radius-md: 14px;
+  --border-radius-sm: 8px;
+}
+
+/* ==========================================================================
+   Base Styles & Reset
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ==========================================================================
+   Background mesh and states
+   ========================================================================== */
+.app-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  transition: background 1s ease-in-out;
+  background: radial-gradient(circle at top right, #1b263b 0%, #0d121f 50%, #07090e 100%);
+}
+
+/* Dynamic background gradients for a premium weather experience */
+.app-background.bg-sunny {
+  background: radial-gradient(circle at top right, #2c4420 0%, #0c1208 50%, #050805 100%);
+}
+
+.app-background.bg-cloudy {
+  background: radial-gradient(circle at top right, #1b263b 0%, #0d121f 50%, #07090e 100%);
+}
+
+.app-background.bg-rain {
+  background: radial-gradient(circle at top right, #182236 0%, #090e19 60%, #030509 100%);
+}
+
+.app-background.bg-thunderstorm {
+  background: radial-gradient(circle at top right, #1e1335 0%, #0a0618 60%, #030209 100%);
+}
+
+.app-background.bg-snow {
+  background: radial-gradient(circle at top right, #253948 0%, #0d161e 60%, #05090d 100%);
+}
+
+/* Subtle dot overlay grid */
+.app-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 0);
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   App Container & Glass Panel Layout
+   ========================================================================== */
+.app-container {
+  flex: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glass-panel {
+  width: 100%;
+  background: rgba(10, 14, 26, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   Header Bar
+   ========================================================================== */
+.top-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 20px;
+}
+
+@media (min-width: 1024px) {
+  .top-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* Location and live status labels */
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.location-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.location-heading h1 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+.country-name {
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.status-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge {
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge-live {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--accent-green);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.badge-manual {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Search bar, Time pill and Toggles */
+.header-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .header-right {
+    width: auto;
+  }
+}
+
+.search-form {
+  flex: 1;
+  min-width: 200px;
+}
+
+@media (min-width: 768px) {
+  .search-form {
+    max-width: 320px;
+  }
+}
+
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 4px 6px 4px 14px;
+  transition: all 0.3s ease;
+}
+
+.search-wrapper:focus-within {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.search-icon {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.search-wrapper input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  font-size: 14px;
+}
+
+.search-wrapper input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border: none;
+  outline: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.search-btn:hover {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+/* Time pill */
+.time-pill-container {
+  background: var(--bg-pill);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Unit toggle switch button */
+.unit-btn {
+  background: var(--bg-pill);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 6px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-family);
+  font-weight: 600;
+  outline: none;
+  transition: background 0.2s;
+}
+
+.unit-btn:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.unit-label {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.unit-label.active {
+  color: var(--accent-blue);
+}
+
+.unit-divider {
+  color: rgba(255, 255, 255, 0.15);
+  font-weight: 300;
+}
+
+/* Refresh button */
+.refresh-btn {
+  background: var(--bg-pill);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.refresh-btn:hover {
+  background: rgba(255,255,255,0.1);
+  transform: rotate(30deg);
+}
+
+/* ==========================================================================
+   Status & Alert Indicators
+   ========================================================================== */
+.status-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--accent-blue);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-spinner p {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.error-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 12px;
+  padding: 10px 16px;
+  width: 100%;
+  max-width: 600px;
+  color: #fca5a5;
+  font-size: 13px;
+  animation: shake 0.4s ease-in-out;
+}
+
+.error-icon {
+  font-size: 14px;
+}
+
+.close-error-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.close-error-btn:hover {
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Dashboard Grid
+   ========================================================================== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  transition: opacity 0.4s ease;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 320px minmax(0, 1fr);
+    gap: 20px;
+  }
+}
+
+/* Unified Glass Card Styling */
+.glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--card-shadow);
+  padding: 20px;
+  transition: border-color 0.3s, background-color 0.3s, transform 0.3s;
+}
+
+.glass-card:hover {
+  border-color: var(--border-card-hover);
+  background-color: var(--bg-card-hover);
+}
+
+/* ==========================================================================
+   Left Column: Tall Overview Panel
+   ========================================================================== */
+.overview-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.overview-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding-bottom: 16px;
+}
+
+.condition-art-large img {
+  width: 64px;
+  height: 64px;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));
+}
+
+.condition-text-wrapper h2 {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.condition-text-wrapper p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Astronomy Sunrise/Sunset */
+.astro-details-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  border-radius: var(--border-radius-md);
+  font-size: 12px;
+}
+
+.astro-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+}
+
+.astro-row strong {
+  color: var(--text-primary);
+  margin-left: auto;
+}
+
+.text-orange { color: var(--accent-amber); }
+.text-red { color: var(--accent-red); }
+
+/* Main Temperature display */
+.temp-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.temp-display {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+}
+
+.temp-value {
+  font-size: 84px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.temp-symbol {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--accent-blue);
+  margin-top: 8px;
+  margin-left: 2px;
+}
+
+.feels-like-container {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.feels-like-container strong {
+  color: var(--text-primary);
+}
+
+/* Bottom small metrics bar */
+.overview-bottom-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 16px;
+}
+
+.mini-metric {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mini-metric i {
+  font-size: 14px;
+  color: var(--text-secondary);
+  width: 20px;
+  text-align: center;
+}
+
+.mini-metric-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 11px;
+}
+
+.mini-metric-info span {
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.mini-metric-info strong {
+  font-size: 12px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Right Column / Main Content Column
+   ========================================================================== */
+.main-content-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 640px) {
+  .metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.metric-card.glass-card {
+  padding: 12px 14px;
+  height: 106px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: var(--border-radius-md);
+  gap: 4px;
+}
+
+.metric-card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+.metric-card-header span {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.metric-card-header i {
+  font-size: 12px;
+}
+
+.icon-feels { color: #fca5a5; }
+.icon-humidity { color: #38bdf8; }
+.icon-wind { color: #a5f3fc; }
+.icon-vis { color: #c084fc; }
+.icon-pressure { color: #94a3b8; }
+.icon-uv { color: #fbbf24; }
+
+.metric-card-body-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.metric-card-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.metric-card-value .sub-unit {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.metric-card-footer {
+  font-size: 10px;
+  color: var(--text-secondary);
+  line-height: 1.3;
+  font-weight: 400;
+}
+
+/* Progress ring for humidity card */
+.progress-ring-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-ring__circle {
+  transition: stroke-dashoffset 0.4s ease;
+  stroke-linecap: round;
+}
+
+/* ==========================================================================
+   24-Hour Forecast Panel
+   ========================================================================== */
+.hourly-forecast-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hourly-scroll-container {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  /* Hide scrollbars globally */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hourly-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.hourly-card {
+  min-width: 60px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: var(--border-radius-md);
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+
+.hourly-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.hourly-time {
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.hourly-card img {
+  width: 28px;
+  height: 28px;
+}
+
+.hourly-temp {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.hourly-rain {
+  font-size: 9px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.hourly-rain.has-rain {
+  color: var(--accent-blue);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   7-Day Daily Forecast Panel (Redesigned as compact horizontal cards)
+   ========================================================================== */
+.daily-forecast-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.daily-scroll-container {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.daily-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.daily-forecast-card {
+  min-width: 86px;
+  flex: 1;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: var(--border-radius-md);
+  padding: 12px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.daily-forecast-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Highlight style for the current day forecast card */
+.daily-forecast-card.active-today {
+  border: 1px solid rgba(234, 179, 8, 0.4);
+  background: rgba(234, 179, 8, 0.03);
+  box-shadow: inset 0 0 10px rgba(234, 179, 8, 0.05);
+}
+
+.daily-day-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.daily-weather-art img {
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+.daily-rain-chance {
+  font-size: 9px;
+  color: var(--accent-blue);
+  font-weight: 500;
+  min-height: 12px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.daily-rain-chance.empty {
+  visibility: hidden;
+}
+
+.daily-temp-range {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.daily-temp-range .temp-divider {
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+.daily-temp-range .min-temp {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.app-footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 11px;
+  color: var(--text-muted);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  margin-top: auto;
+}
+
+/* ==========================================================================
+   Utility Classes & Keyframes
+   ========================================================================== */
+.hidden {
+  display: none !important;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.fade-out {
+  opacity: 0.3;
+  pointer-events: none;
+}
