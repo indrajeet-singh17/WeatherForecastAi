@@ -33,37 +33,46 @@
         </div>
         
         <div class="header-right">
-          <form class="search-form" id="searchForm">
-            <div class="search-wrapper">
-              <i class="fa-solid fa-magnifying-glass search-icon"></i>
-              <input 
-                type="text" 
-                id="searchInput" 
-                placeholder="Search city... (e.g. London)" 
-                autocomplete="off" 
-                required
-              >
-              <button type="submit" class="search-btn" aria-label="Search">
-                <i class="fa-solid fa-arrow-right"></i>
+          <!-- Hamburger Menu Button (Mobile Only) -->
+          <button class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+            <span>Menu</span>
+          </button>
+
+          <!-- Mobile Menu Dropdown -->
+          <div class="mobile-menu-dropdown" id="mobileMenuDropdown">
+            <form class="search-form" id="searchForm">
+              <div class="search-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input 
+                  type="text" 
+                  id="searchInput" 
+                  placeholder="Search city... (e.g. London)" 
+                  autocomplete="off" 
+                  required
+                >
+                <button type="submit" class="search-btn" aria-label="Search">
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
+            </form>
+
+            <div class="time-pill-container" id="timePill">
+              Delhi Time: --:-- PM
+            </div>
+
+            <div class="unit-toggle-container">
+              <button id="unitToggle" class="unit-btn" aria-label="Toggle Temperature Unit">
+                <span class="unit-label active" id="labelC">°C</span>
+                <span class="unit-divider">|</span>
+                <span class="unit-label" id="labelF">°F</span>
               </button>
             </div>
-          </form>
 
-          <div class="time-pill-container" id="timePill">
-            Delhi Time: --:-- PM
-          </div>
-
-          <div class="unit-toggle-container">
-            <button id="unitToggle" class="unit-btn" aria-label="Toggle Temperature Unit">
-              <span class="unit-label active" id="labelC">°C</span>
-              <span class="unit-divider">|</span>
-              <span class="unit-label" id="labelF">°F</span>
+            <button id="refreshBtn" class="refresh-btn" aria-label="Refresh Current City">
+              <i class="fa-solid fa-rotate-right"></i>
             </button>
           </div>
-
-          <button id="refreshBtn" class="refresh-btn" aria-label="Refresh Current City">
-            <i class="fa-solid fa-rotate-right"></i>
-          </button>
         </div>
       </header>
 

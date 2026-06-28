@@ -1,7 +1,8 @@
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
-require('dotenv').config();
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -162,7 +163,6 @@ app.get('/api/weather', async (req, res) => {
 });
 
 // Serve static frontend files
-const path = require('path');
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Fallback to index.html for other requests

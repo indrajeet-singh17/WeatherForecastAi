@@ -1,0 +1,12 @@
+{
+  "name": "weather-app-frontend",
+  "version": "1.0.0",
+  "description": "Static frontend served locally on port 3000",
+  "scripts": {
+    "start": "serve -p 3000",
+    "dev": "serve -p 3000"
+  },
+  "dependencies": {
+    "serve": "^14.2.3"
+  }
+}

@@ -1,7 +1,9 @@
 // ==========================================================================
 // Application State & Constants
 // ==========================================================================
-const BACKEND_URL = 'https://weatherforecastai.onrender.com/api/weather';
+const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:5000/api/weather'
+  : 'https://weatherforecastai.onrender.com/api/weather';
 const DEFAULT_CITY = 'Agra, Uttar Pradesh, India';
 
 let weatherData = null;
@@ -14,6 +16,8 @@ const unitToggleBtn = document.getElementById('unitToggle');
 const labelC = document.getElementById('labelC');
 const labelF = document.getElementById('labelF');
 const refreshBtn = document.getElementById('refreshBtn');
+const hamburgerMenu = document.getElementById('hamburgerMenu');
+const mobileMenuDropdown = document.getElementById('mobileMenuDropdown');
 
 const loadingIndicator = document.getElementById('loadingIndicator');
 const errorAlert = document.getElementById('errorAlert');
@@ -92,6 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Close error alert
   closeErrorBtn.addEventListener('click', hideError);
+
+  // Hamburger menu toggle
+  hamburgerMenu.addEventListener('click', () => {
+    mobileMenuDropdown.classList.toggle('active');
+  });
 });
 
 // ==========================================================================
@@ -102,8 +111,13 @@ async function fetchWeather(city) {
   hideError();
   weatherContent.classList.add('fade-out');
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
+
   try {
-    const response = await fetch(`${BACKEND_URL}?city=${encodeURIComponent(city)}`);
+    const response = await fetch(`${BACKEND_URL}?city=${encodeURIComponent(city)}`, {
+      signal: controller.signal
+    });
     const data = await response.json();
 
     if (!response.ok) {
@@ -118,8 +132,13 @@ async function fetchWeather(city) {
     searchInput.value = '';
   } catch (error) {
     console.error('Fetch Error:', error);
-    showError(error.message || 'Network error. Please check your connection and try again.');
+    if (error.name === 'AbortError') {
+      showError('Request timed out. The weather service took too long to respond.');
+    } else {
+      showError(error.message || 'Network error. Please check your connection and try again.');
+    }
   } finally {
+    clearTimeout(timeoutId);
     hideLoading();
     weatherContent.classList.remove('fade-out');
   }
